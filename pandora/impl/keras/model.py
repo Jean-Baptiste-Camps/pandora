@@ -288,13 +288,12 @@ class KerasModel(BaseModel):
 
     def predict(self, input_data, batch_size=None):
         
-        predictions = self.model.predict(
+        preds = self.model.predict(
             input_data, batch_size=batch_size or self.batch_size)
-        if predictions.__class__.__name__ == 'ndarray':
-            out = []
-            out.append(predictions)
+        if isinstance(preds, np.ndarray):
+            out = [preds]
         else:
-            out = predictions    
+            out = preds
         
         labels = []
         if self.include_lemma:
