@@ -287,8 +287,15 @@ class KerasModel(BaseModel):
                        batch_size=self.batch_size)
 
     def predict(self, input_data, batch_size=None):
-        out = self.model.predict(
+        
+        predictions = self.model.predict(
             input_data, batch_size=batch_size or self.batch_size)
+        if predictions.__class__.__name__ == 'ndarray':
+            out = []
+            out.append(predictions)
+        else:
+            out = predictions    
+        
         labels = []
         if self.include_lemma:
             labels.append('lemma_out')
@@ -296,6 +303,7 @@ class KerasModel(BaseModel):
             labels.append('pos_out')
         if self.include_morph:
             labels.append('morph_out')
+        
         assert len(out) == len(labels)
         return {k: v for (k, v) in zip(labels, out)}
 
