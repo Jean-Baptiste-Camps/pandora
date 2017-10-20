@@ -321,6 +321,20 @@ class Preprocessor(object):
 
     def __init__(self, categorical=False):
         self.categorical = categorical
+        self.max_lemma_len = None
+        self.max_token_len = None
+        self.focus_repr = None
+        self.token_char_vocab, self.token_char_lookup = None, None
+        self.known_tokens = None
+        self.include_lemma, self.known_lemmas = None, None
+        self.lemma_char_vocab, self.lemma_char_lookup = None, None
+        self.min_lem_cnt, self.lemma_encoder = None, None
+        self.pos_encoder = None
+        self.morph_encoder = None
+        self.nb_morph_cats, self.morph_idxs = None, None
+        self.include_morph = None
+        self.include_pos = None
+        self.lemma_char_dict = None
 
     def fit(self, tokens, lemmas, pos, morph, include_lemma,
             include_morph, focus_repr, max_token_len=None,
@@ -371,7 +385,6 @@ class Preprocessor(object):
         ===========
             Itself.
         """
-
         if max_token_len:
             self.max_token_len = max_token_len
         else:
@@ -407,6 +420,7 @@ class Preprocessor(object):
 
         # fit pos labels:
         if pos:
+            self.include_pos = pos
             self.pos_encoder = LabelEncoder()
             self.pos_encoder.fit(pos + ['<UNK>'])
 
@@ -633,7 +647,7 @@ class Preprocessor(object):
                     morphs.append('|'.join(m))
                 else:
                     morphs.append('_')
-        return morphs
+            return morphs
 
     def save(self, model_dir):
         if hasattr(self, 'lemma_encoder'):
