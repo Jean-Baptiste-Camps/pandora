@@ -692,6 +692,7 @@ class Preprocessor(object):
         self.focus_repr = focus_repr
         self.include_lemma = include_lemma
         self.include_pos = include_pos
+        self.include_morph = include_morph
 
         self.token_char_lookup = {}
         path = os.sep.join((model_dir, 'token_char_lookup.txt'))
